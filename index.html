@@ -5,527 +5,646 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Baron Gartner — Free. Local. Private.</title>
 <meta name="description" content="Desktop software that runs entirely on your machine. No cloud, no accounts, no subscriptions, no telemetry.">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0a0a0c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#E9E9EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08080B" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Baron Gartner — Free. Local. Private.">
 <meta property="og:description" content="Desktop software that runs entirely on your machine. No cloud, no accounts, no subscriptions, no telemetry.">
 <meta property="og:url" content="https://barongartner.github.io/">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ff5f6d'/><stop offset='.35' stop-color='%23ffc371'/><stop offset='.7' stop-color='%2360a5fa'/><stop offset='1' stop-color='%23c084fc'/></linearGradient></defs><rect width='32' height='32' fill='url(%23g)'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236FE7F0'/><stop offset='.34' stop-color='%23A78BFA'/><stop offset='.67' stop-color='%23FF6AD5'/><stop offset='1' stop-color='%23FFD98E'/></linearGradient></defs><rect width='32' height='32' fill='url(%23g)'/></svg>">
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
+/* ============================================================
+   Swiss grid underneath, iridescent chrome on top.
+   The discipline is the layout; the colour lives in exactly
+   two places: the chrome object and the aberration fringing.
+   ============================================================ */
 
-  :root {
-    --paper: #ffffff;
-    --ink: #0a0a0a;
-    /* #767676 is the lightest grey that still clears WCAG AA (4.5:1) on white.
-       Anything lighter and the card copy fails contrast in light mode. */
-    --grey: #767676;
-    --hair: #e6e6e6;
-    --raise: #fafafa;
-    /* the one place colour is allowed to exist */
-    --iris: linear-gradient(100deg, #ff5f6d, #ffc371, #6ee7b7, #60a5fa, #c084fc, #ff5f6d);
+:root{
+  --paper:#E9E9EE;
+  --ink:#0B0B0D;
+  /* #63636F is the lightest muted that clears WCAG AA on #E9E9EE. The whole
+     mono annotation layer is 10px, which is exactly where contrast matters most. */
+  --muted:#63636F;
+  --hair:#CFCFDA;
+  --panel:rgba(255,255,255,.5);
+  --bloom-a:#C3B2F0;
+  --bloom-b:#8B7BD8;
+  --bloom-c:#F3C9E8;
+  --cy:#00C8D4;
+  --mg:#FF3DBE;
+  --bloom-op:.85;
+  --grid-op:.5;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#08080B;
+    --ink:#EDEDF2;
+    --muted:#7B7B8A;
+    --hair:#1E1E27;
+    --panel:rgba(255,255,255,.035);
+    --bloom-a:#6D4FC2;
+    --bloom-b:#3B2A78;
+    --bloom-c:#A6357F;
+    --cy:#00E5F0;
+    --mg:#FF4FCB;
+    --bloom-op:.75;
+    --grid-op:.85;
   }
+}
+:root[data-theme="dark"]{
+  --paper:#08080B; --ink:#EDEDF2; --muted:#7B7B8A; --hair:#1E1E27;
+  --panel:rgba(255,255,255,.035); --bloom-a:#6D4FC2; --bloom-b:#3B2A78;
+  --bloom-c:#A6357F; --cy:#00E5F0; --mg:#FF4FCB; --bloom-op:.75; --grid-op:.85;
+}
+:root[data-theme="light"]{
+  --paper:#E9E9EE; --ink:#0B0B0D; --muted:#63636F; --hair:#CFCFDA;
+  --panel:rgba(255,255,255,.5); --bloom-a:#C3B2F0; --bloom-b:#8B7BD8;
+  --bloom-c:#F3C9E8; --cy:#00C8D4; --mg:#FF3DBE; --bloom-op:.85; --grid-op:.5;
+}
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper: #0a0a0c;
-      --ink: #f2f2f4;
-      --grey: #7b7b85;
-      --hair: #22222a;
-      --raise: #101016;
-    }
-  }
+*,*::before,*::after{box-sizing:border-box}
 
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: "Helvetica Neue", Helvetica, Inter, ui-sans-serif, -apple-system, "Segoe UI", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    line-height: 1.5;
-    overflow-x: hidden;
-  }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  overflow-x:hidden;
+}
 
-  /* one iridescent bloom, top right, barely there */
-  body::before {
-    content: "";
-    position: fixed;
-    right: -200px;
-    top: -240px;
-    width: 620px;
-    height: 620px;
-    border-radius: 50%;
-    background: var(--iris);
-    background-size: 200% 200%;
-    filter: blur(120px);
-    opacity: 0.20;
-    pointer-events: none;
-    z-index: 0;
-    animation: drift 18s ease-in-out infinite;
-  }
+/* the technical layer: every label, coordinate and spec is mono */
+.mono{
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+}
 
-  @keyframes drift {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
-  }
+/* ---------- ambient ground ---------- */
 
-  .wrap {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: clamp(18px, 4vw, 40px);
-  }
+.bloom{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;opacity:var(--bloom-op)}
+.bloom i{position:absolute;border-radius:50%;filter:blur(90px);display:block}
+.bloom .b1{width:56vw;height:56vw;min-width:340px;min-height:340px;background:var(--bloom-a);left:14%;top:-10%}
+.bloom .b2{width:44vw;height:44vw;min-width:260px;min-height:260px;background:var(--bloom-b);left:44%;top:14%}
+.bloom .b3{width:38vw;height:38vw;min-width:220px;min-height:220px;background:var(--bloom-c);left:6%;top:26%}
 
-  /* ---- shared micro-label ---- */
+/* hairline modular grid, the Swiss skeleton left visible */
+.grid-overlay{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:var(--grid-op);
+  background-image:
+    linear-gradient(90deg,var(--hair) 1px,transparent 1px),
+    linear-gradient(var(--hair) 1px,transparent 1px);
+  background-size:calc(100vw/12) calc(100vw/12);
+  mask-image:linear-gradient(#000,#000 62%,transparent 96%);
+  -webkit-mask-image:linear-gradient(#000,#000 62%,transparent 96%);
+}
 
-  .label {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    font-size: 11px;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
+/* ---------- frame ---------- */
 
-  .chip {
-    width: 10px;
-    height: 10px;
-    flex: none;
-    background: var(--iris);
-    background-size: 300% 300%;
-    animation: drift 9s ease-in-out infinite;
-  }
+.shell{position:relative;padding:0 clamp(12px,2.4vw,26px)}
 
-  /* ---- masthead ---- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  border-bottom:1px solid var(--ink);
+  padding:11px 0;
+}
+.topbar nav{display:flex;gap:clamp(12px,2.4vw,28px)}
+.topbar a{color:var(--muted);text-decoration:none;transition:color .16s}
+.topbar a:hover,.topbar a:focus-visible{color:var(--ink)}
+.topbar .brandmark{display:flex;align-items:center;gap:9px;color:var(--ink)}
+.tick{width:9px;height:9px;flex:none;background:conic-gradient(from 0deg,var(--cy),#A78BFA,var(--mg),#FFD98E,var(--cy))}
 
-  .head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
+button.invert{
+  background:none;border:1px solid var(--hair);color:var(--muted);cursor:pointer;
+  padding:4px 10px;font:inherit;
+}
+button.invert:hover{border-color:var(--ink);color:var(--ink)}
 
-  .head nav {
-    display: flex;
-    gap: clamp(14px, 3vw, 26px);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--grey);
-  }
+/* ---------- hero ---------- */
 
-  .head nav a { color: inherit; text-decoration: none; transition: color .18s ease; }
-  .head nav a:hover, .head nav a:focus-visible { color: var(--ink); }
+.hero{position:relative;padding:clamp(22px,4vw,44px) 0 clamp(26px,4vw,50px)}
 
-  /* ---- hero ---- */
+.hero-meta{
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  color:var(--muted);margin-bottom:clamp(14px,2.4vw,26px);
+}
 
-  .hero { padding: clamp(58px, 13vw, 150px) 0 clamp(46px, 9vw, 104px); }
+.wordmark{position:relative;z-index:2}
 
-  h1 {
-    margin: 0;
-    font-weight: 800;
-    font-size: clamp(40px, 9.4vw, 116px);
-    line-height: 0.98;
-    letter-spacing: -0.05em;
-    animation: rise 800ms cubic-bezier(.2,.75,.2,1) both;
-  }
+/* chromatic aberration: three passes, the outer two blended into the ground.
+   Blend modes are what keep the fringe from reading as a flat drop shadow. */
+.ab{
+  position:relative;display:block;
+  font-weight:800;
+  font-size:clamp(52px,15.4vw,220px);
+  line-height:.82;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+  color:var(--ink);
+}
+.ab span{display:block;position:relative}
+.ab span::before,.ab span::after{
+  content:attr(data-t);
+  position:absolute;left:0;top:0;width:100%;
+  pointer-events:none;
+}
+.ab span::before{color:var(--cy);transform:translate3d(-.055em,0,0);mix-blend-mode:screen;opacity:.92}
+.ab span::after{color:var(--mg);transform:translate3d(.055em,0,0);mix-blend-mode:screen;opacity:.92}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .ab span::before,
+  :root:not([data-theme="dark"]) .ab span::after{mix-blend-mode:multiply;opacity:.62}
+}
+:root[data-theme="light"] .ab span::before,
+:root[data-theme="light"] .ab span::after{mix-blend-mode:multiply;opacity:.62}
 
-  h1 .dim { color: var(--grey); }
+.ab .l2{margin-left:.085em}
+/* Third line is outlined rather than filled. It carries NO aberration passes:
+   three overlapping 1.6px strokes turn the counters into noise and the word
+   stops being readable at all. One clean outline against two solid lines. */
+.ab .l3{margin-left:.17em;color:transparent;-webkit-text-stroke:1.6px var(--ink)}
+.ab .l3::before,.ab .l3::after{display:none}
 
-  .underline {
-    height: 5px;
-    width: min(300px, 46vw);
-    margin: clamp(30px, 4.6vw, 52px) 0 0;
-    background: var(--iris);
-    background-size: 300% 300%;
-    animation: drift 11s ease-in-out infinite;
-  }
+/* the chrome object sits between the second and third line */
+.object{
+  position:absolute;
+  right:2%;top:6%;
+  width:min(46vw,540px);
+  aspect-ratio:1;
+  z-index:3;
+  pointer-events:none;
+}
+.object canvas{width:100%;height:100%;display:block}
 
-  .lede {
-    margin: clamp(30px, 4.6vw, 52px) 0 0;
-    max-width: 46ch;
-    font-size: clamp(16px, 2.1vw, 21px);
-    letter-spacing: -0.011em;
-    color: var(--ink);
-    animation: rise 800ms 120ms cubic-bezier(.2,.75,.2,1) both;
-  }
+/* Annotation strip. These were absolutely positioned over the artwork to match
+   the reference, but the headline is fluid and at most widths the first note
+   landed directly on top of the word FREE. A three-column strip on the same
+   grid keeps the technical character and cannot collide with anything. */
+.annos{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,2.4vw,34px);
+  margin-top:clamp(20px,3.2vw,42px);
+  position:relative;z-index:4;
+}
+.anno{
+  margin:0;color:var(--muted);line-height:1.5;
+  border-top:1px solid var(--muted);padding-top:9px;
+}
 
-  .lede .quiet { color: var(--grey); }
+.hero-foot{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;
+  border-top:1px solid var(--ink);padding-top:12px;margin-top:clamp(20px,3.4vw,38px);
+  position:relative;z-index:2;
+}
+.lede{max-width:44ch;font-size:clamp(14px,1.34vw,16.5px);line-height:1.55}
+.lede b{font-weight:400}
+.lede span{color:var(--muted)}
 
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: none; }
-  }
+/* ---------- section rules ---------- */
 
-  /* ---- sections ---- */
+.sec{padding:clamp(38px,6vw,74px) 0 0;position:relative;z-index:2}
+.sec-rule{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+  border-top:1px solid var(--ink);padding-top:11px;margin-bottom:clamp(16px,2.6vw,28px);
+  color:var(--muted);
+}
+.sec-rule h2{
+  margin:0;color:var(--ink);font-size:clamp(15px,1.7vw,19px);
+  letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+}
 
-  section { padding: clamp(40px, 7vw, 76px) 0; }
+/* ---------- software index ---------- */
 
-  .sec-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--hair);
-    padding-top: 16px;
-    margin-bottom: clamp(28px, 4.6vw, 48px);
-  }
+/* Hairlines come from a 1px ring on each card, not from a coloured container
+   showing through a 1px gap. Seven cards in a four-column grid leaves an empty
+   cell, and with the container technique that cell renders as a grey hole.
+   A ring per card means empty cells are simply absent at any column count. */
+.index{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:1px}
 
-  .count {
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--grey);
-    font-variant-numeric: tabular-nums;
-  }
+.app{
+  position:relative;background:var(--paper);
+  box-shadow:0 0 0 1px var(--hair);
+  padding:clamp(15px,1.5vw,20px);
+  display:flex;flex-direction:column;gap:11px;
+  min-height:194px;
+  transition:background .2s;
+}
+.app:hover,.app:focus-within{background:var(--panel)}
+/* iridescent hairline wipes along the top edge on hover */
+.app::before{
+  content:"";position:absolute;inset:-1px -1px auto -1px;height:2px;
+  background:linear-gradient(90deg,var(--cy),#A78BFA,var(--mg),#FFD98E);
+  transform:scaleX(0);transform-origin:left;transition:transform .34s cubic-bezier(.2,.75,.2,1);
+}
+.app:hover::before,.app:focus-within::before{transform:scaleX(1)}
 
-  /* ---- app grid ---- */
+.app-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.app h3{margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.app .ver{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.app p{margin:0;font-size:13.4px;line-height:1.5;color:var(--muted);flex:1}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 1px;
-    background: var(--hair);
-    border: 1px solid var(--hair);
-  }
+.app .plat{display:flex;gap:6px;flex-wrap:wrap}
+.app .plat a{
+  color:var(--ink);text-decoration:none;border:1px solid var(--ink);
+  padding:4px 9px;transition:background .16s,color .16s;
+}
+.app .plat a:hover,.app .plat a:focus-visible{background:var(--ink);color:var(--paper)}
+.app .src{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .16s,border-color .16s;align-self:flex-start}
+.app .src:hover,.app .src:focus-visible{color:var(--ink);border-bottom-color:var(--hair)}
 
-  .card {
-    position: relative;
-    background: var(--paper);
-    padding: clamp(22px, 3vw, 30px);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: background .2s ease;
-  }
+/* ---------- lab ---------- */
 
-  .card:hover { background: var(--raise); }
+.lab{display:grid;gap:1px}
+.lab a{
+  background:var(--paper);padding:clamp(14px,1.6vw,20px);
+  box-shadow:0 0 0 1px var(--hair);
+  display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;
+  text-decoration:none;color:inherit;transition:background .2s;
+}
+.lab a:hover,.lab a:focus-visible{background:var(--panel)}
+.lab strong{font-size:15px;letter-spacing:-.018em}
+.lab span.d{font-size:13.4px;color:var(--muted);flex:1;min-width:200px}
 
-  /* gradient hairline that wipes in along the top edge on hover */
-  .card::before {
-    content: "";
-    position: absolute;
-    inset: -1px -1px auto -1px;
-    height: 2px;
-    background: var(--iris);
-    background-size: 300% 300%;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform .32s cubic-bezier(.2,.75,.2,1);
-    animation: drift 9s ease-in-out infinite;
-  }
+/* ---------- foot ---------- */
 
-  .card:hover::before, .card:focus-within::before { transform: scaleX(1); }
+.foot{
+  border-top:1px solid var(--ink);margin-top:clamp(38px,6vw,72px);
+  padding:12px 0 clamp(26px,4vw,48px);
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  color:var(--muted);position:relative;z-index:2;
+}
+.foot nav{display:flex;gap:clamp(12px,2.4vw,26px)}
+.foot a{color:var(--muted);text-decoration:none;transition:color .16s}
+.foot a:hover,.foot a:focus-visible{color:var(--ink)}
 
-  .card-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-  }
+.strip{display:flex;height:6px;width:150px;max-width:40vw}
+.strip i{flex:1}
 
-  .card h3 {
-    margin: 0;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.022em;
-  }
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
-  .ver {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    color: var(--grey);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
+@media (max-width:900px){
+  .object{position:relative;right:auto;top:auto;width:min(74vw,420px);margin:16px 0 6px auto}
+  .annos{grid-template-columns:1fr}
+  .grid-overlay{background-size:calc(100vw/6) calc(100vw/6)}
+}
+@media (max-width:560px){
+  .ab .l2{margin-left:0}
+  .ab .l3{margin-left:0}
+  .topbar nav{gap:12px}
+}
 
-  .card p {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--grey);
-    flex: 1;
-  }
-
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    margin-top: 2px;
-  }
-
-  .dl {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 13px;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    text-decoration: none;
-    font-size: 11px;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    font-weight: 500;
-    transition: background .18s ease, color .18s ease;
-  }
-
-  .dl:hover, .dl:focus-visible { background: var(--ink); color: var(--paper); }
-  .dl svg { width: 12px; height: 12px; flex: none; }
-
-  .src {
-    font-size: 11px;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--grey);
-    text-decoration: none;
-    padding: 7px 4px;
-    border-bottom: 1px solid transparent;
-    transition: color .18s ease, border-color .18s ease;
-  }
-
-  .src:hover, .src:focus-visible { color: var(--ink); border-bottom-color: var(--hair); }
-
-  /* ---- lab list ---- */
-
-  .lab { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
-
-  .lab a {
-    background: var(--paper);
-    padding: clamp(18px, 2.4vw, 24px) clamp(22px, 3vw, 30px);
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    flex-wrap: wrap;
-    text-decoration: none;
-    color: inherit;
-    transition: background .2s ease;
-  }
-
-  .lab a:hover, .lab a:focus-visible { background: var(--raise); }
-  .lab strong { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
-  .lab span { font-size: 14px; color: var(--grey); }
-
-  /* ---- foot ---- */
-
-  .foot {
-    border-top: 1px solid var(--hair);
-    margin-top: clamp(30px, 5vw, 60px);
-    padding: 18px 0 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 18px;
-    flex-wrap: wrap;
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--grey);
-  }
-
-  .foot .social { display: flex; gap: clamp(14px, 3vw, 26px); }
-  .foot a { color: var(--grey); text-decoration: none; transition: color .18s ease; }
-  .foot a:hover, .foot a:focus-visible { color: var(--ink); }
-
-  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-
-  @media (max-width: 520px) {
-    .foot, .count { font-size: 9px; letter-spacing: 0.16em; }
-    .head nav { letter-spacing: 0.14em; }
-    /* the bloom is sized in px, so scale it back or it swallows a phone screen */
-    body::before { right: -150px; top: -180px; width: 380px; height: 380px; filter: blur(90px); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    h1, .lede, .underline, .chip, .card::before, body::before { animation: none; }
-    .card::before { transition: none; }
-  }
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<div class="bloom" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+<div class="grid-overlay" aria-hidden="true"></div>
 
-  <header class="head">
-    <span class="label"><span class="chip"></span>Baron Gartner</span>
+<div class="shell">
+
+  <header class="topbar mono">
+    <span class="brandmark"><span class="tick"></span>Baron Gartner</span>
     <nav>
       <a href="#software">Software</a>
       <a href="#lab">Lab</a>
       <a href="https://github.com/barongartner">GitHub</a>
     </nav>
+    <button class="invert mono" id="invert" type="button">Invert</button>
   </header>
 
-  <div class="hero">
-    <h1>Free.<br>Local.<br><span class="dim">Private.</span></h1>
-    <div class="underline"></div>
-    <p class="lede">
-      I build desktop software that runs entirely on your machine.
-      <span class="quiet">No cloud, no accounts, no subscriptions, no telemetry. Download it, run it, keep it.</span>
-    </p>
-  </div>
+  <section class="hero">
 
-  <section id="software">
-    <div class="sec-head">
-      <span class="label"><span class="chip"></span>Software</span>
-      <span class="count">7 apps · free · open source</span>
+    <div class="hero-meta mono">
+      <span>Free / Local / Private</span>
+      <span>Lat 49.28 N &nbsp; Lon 123.12 W</span>
+      <span>Index 07 &mdash; Desktop software</span>
     </div>
 
-    <div class="grid">
+    <div class="object" aria-hidden="true"><canvas id="chrome" width="256" height="256"></canvas></div>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>Photon</h3>
-          <span class="ver">v1.2.0</span>
-        </div>
+    <h1 class="wordmark ab">
+      <span class="l1" data-t="Free">Free</span>
+      <span class="l2" data-t="Local">Local</span>
+      <span class="l3" data-t="Private">Private</span>
+    </h1>
+
+    <div class="annos">
+      <p class="anno mono">Runs entirely on your machine. No cloud, no accounts, no telemetry.</p>
+      <p class="anno mono">Seven applications, Windows and macOS. Every build signed and downloadable, never compiled by you.</p>
+      <p class="anno mono">Fig. 01 &mdash; iridescent field, rendered live in canvas from a metaball dome.</p>
+    </div>
+
+    <div class="hero-foot">
+      <p class="lede"><b>I build desktop software that runs entirely on your machine.</b> <span>No cloud, no accounts, no subscriptions, no telemetry. Download it, run it, keep it.</span></p>
+      <span class="mono">Est. 2025 &mdash; Vancouver</span>
+    </div>
+  </section>
+
+  <section class="sec" id="software">
+    <div class="sec-rule mono">
+      <h2>Software</h2>
+      <span>07 titles &nbsp;/&nbsp; free &nbsp;/&nbsp; open source</span>
+    </div>
+
+    <div class="index">
+
+      <article class="app">
+        <div class="app-top"><h3>Photon</h3><span class="ver mono">v1.2.0</span></div>
         <p>Fast, local photo sorting. Fly through tens of thousands of photos in minutes and file them where they belong.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/Photon/releases/tag/v1.2.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows &amp; macOS
-          </a>
-          <a class="src" href="https://github.com/barongartner/Photon">Source</a>
-        </div>
+        <div class="plat mono"><a href="https://github.com/barongartner/Photon/releases/tag/v1.2.0">Windows &amp; macOS</a></div>
+        <a class="src mono" href="https://github.com/barongartner/Photon">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>TrackForge</h3>
-          <span class="ver">v1.1.0</span>
+      <article class="app">
+        <div class="app-top"><h3>TrackForge</h3><span class="ver mono">v1.1.0</span></div>
+        <p>Turns YouTube links into properly tagged MP3s, with cover art, album, year, genre, BPM and musical key. Also repairs a library you already own.</p>
+        <div class="plat mono">
+          <a href="https://github.com/barongartner/TrackForge/releases/tag/v1.1.0">macOS</a>
+          <a href="https://github.com/barongartner/TrackForge/releases/tag/v1.0.0">Windows</a>
         </div>
-        <p>Turns YouTube links into properly tagged MP3s, with cover art, album, year, genre, BPM and musical key. Also repairs the metadata across a library you already own.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/TrackForge/releases/tag/v1.1.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            macOS
-          </a>
-          <a class="dl" href="https://github.com/barongartner/TrackForge/releases/tag/v1.0.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/TrackForge">Source</a>
-        </div>
+        <a class="src mono" href="https://github.com/barongartner/TrackForge">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>Verbatim</h3>
-          <span class="ver">v2.2.0</span>
-        </div>
+      <article class="app">
+        <div class="app-top"><h3>Verbatim</h3><span class="ver mono">v2.2.0</span></div>
         <p>Offline audio transcription that tells your speakers apart. Nothing is uploaded, so interviews and calls never leave the room.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/Verbatim/releases/tag/v2.2.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/Verbatim">Source</a>
-        </div>
+        <div class="plat mono"><a href="https://github.com/barongartner/Verbatim/releases/tag/v2.2.0">Windows</a></div>
+        <a class="src mono" href="https://github.com/barongartner/Verbatim">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>FreeFlow</h3>
-          <span class="ver">v2.0.0</span>
-        </div>
+      <article class="app">
+        <div class="app-top"><h3>FreeFlow</h3><span class="ver mono">v2.0.0</span></div>
         <p>Voice dictation for Windows that never phones home. Speak anywhere you can type, with the model running on your own hardware.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/FreeFlow/releases/tag/v2.0.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/FreeFlow">Source</a>
-        </div>
+        <div class="plat mono"><a href="https://github.com/barongartner/FreeFlow/releases/tag/v2.0.0">Windows</a></div>
+        <a class="src mono" href="https://github.com/barongartner/FreeFlow">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>FreeVoice Studio</h3>
-          <span class="ver">v1.0.0</span>
-        </div>
+      <article class="app">
+        <div class="app-top"><h3>FreeVoice Studio</h3><span class="ver mono">v1.0.0</span></div>
         <p>Free forever text to speech with voice cloning, running fully on device. Chatterbox and F5-TTS for quality, Kokoro when you just want a draft.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/FreeVoice/releases/tag/v1.0.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/FreeVoice">Source</a>
-        </div>
+        <div class="plat mono"><a href="https://github.com/barongartner/FreeVoice/releases/tag/v1.0.0">Windows</a></div>
+        <a class="src mono" href="https://github.com/barongartner/FreeVoice">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>Split</h3>
-          <span class="ver">v1.1.2</span>
-        </div>
+      <article class="app">
+        <div class="app-top"><h3>Split</h3><span class="ver mono">v1.1.2</span></div>
         <p>Per-app, multi-headphone audio router. Send any app to any output device, each route carrying its own volume and delay.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/Split/releases/tag/v1.1.2">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            macOS
-          </a>
-          <a class="dl" href="https://github.com/barongartner/Split/releases/tag/windows-v1.0.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/Split">Source</a>
+        <div class="plat mono">
+          <a href="https://github.com/barongartner/Split/releases/tag/v1.1.2">macOS</a>
+          <a href="https://github.com/barongartner/Split/releases/tag/windows-v1.0.0">Windows</a>
         </div>
+        <a class="src mono" href="https://github.com/barongartner/Split">Source &rarr;</a>
       </article>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>ReType</h3>
-          <span class="ver">v6.0.0</span>
-        </div>
+      <article class="app">
+        <div class="app-top"><h3>ReType</h3><span class="ver mono">v6.0.0</span></div>
         <p>An automated typing assistant that types the way a person does, complete with the pauses and corrections.</p>
-        <div class="links">
-          <a class="dl" href="https://github.com/barongartner/ReType/releases/tag/v6.0.0">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-            Windows
-          </a>
-          <a class="src" href="https://github.com/barongartner/ReType">Source</a>
-        </div>
+        <div class="plat mono"><a href="https://github.com/barongartner/ReType/releases/tag/v6.0.0">Windows</a></div>
+        <a class="src mono" href="https://github.com/barongartner/ReType">Source &rarr;</a>
       </article>
 
     </div>
   </section>
 
-  <section id="lab">
-    <div class="sec-head">
-      <span class="label"><span class="chip"></span>Lab</span>
-      <span class="count">Work in progress</span>
+  <section class="sec" id="lab">
+    <div class="sec-rule mono">
+      <h2>Lab</h2>
+      <span>Work in progress</span>
     </div>
 
     <div class="lab">
       <a href="https://github.com/barongartner/The-Pit">
         <strong>The Pit</strong>
-        <span>A testbed where Claude agents trade on paper against each other. Source only, no release yet.</span>
+        <span class="d">A testbed where Claude agents trade on paper against each other. Source only, no release yet.</span>
+        <span class="mono">Python</span>
       </a>
       <a href="https://barongartner.github.io/earnings/">
         <strong>Earnings So Far</strong>
-        <span>A counter that only goes up. One page, no storage, rebuilt from a fixed epoch on every load.</span>
+        <span class="d">A counter that only goes up. One page, no storage, rebuilt from a fixed epoch on every load.</span>
+        <span class="mono">Live</span>
       </a>
     </div>
   </section>
 
-  <footer class="foot">
+  <footer class="foot mono">
     <span>Everything here is free and runs locally</span>
-    <span class="social">
+    <span class="strip" aria-hidden="true">
+      <i style="background:#00C8D4"></i><i style="background:#A78BFA"></i><i style="background:#FF3DBE"></i><i style="background:#FFD98E"></i><i style="background:#7CF0C0"></i>
+    </span>
+    <nav>
       <a href="https://github.com/barongartner">GitHub</a>
       <a href="https://instagram.com/barongartner">Instagram</a>
       <a href="https://youtube.com/@barongartner">YouTube</a>
-    </span>
+    </nav>
   </footer>
 
 </div>
+
+<script>
+/* ============================================================
+   Liquid chrome, rendered per pixel.
+
+   A signed field from four drifting metaballs gives a smooth
+   blob. Normals come from the gradient of that field, which is
+   then used to sample a 1D iridescent environment strip. That
+   is what separates this from a CSS gradient: the colour is a
+   function of surface orientation, so it slides across the form
+   as the shape moves, the way real anodised chrome does.
+
+   Buffer is 256px and upscaled by CSS. Per-pixel work in JS is
+   the cost here, so the loop is capped at 30fps and paused when
+   the canvas scrolls out of view.
+   ============================================================ */
+(function(){
+  var cv = document.getElementById('chrome');
+  if(!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d', {alpha:true});
+  if(!ctx) return;
+
+  var N = cv.width;                       // 256, square
+  var img = ctx.createImageData(N, N);
+  var data = img.data;
+
+  // iridescent strip, sampled by surface orientation
+  var STOPS = [
+    [ 12, 10, 40],[ 84, 34,168],[168, 72,232],[255, 90,208],
+    [255,160,140],[255,222,150],[150,246,214],[ 80,214,240],
+    [140,150,255],[236,238,255]
+  ];
+  var ENV = new Uint8Array(256*3);
+  (function buildEnv(){
+    for(var i=0;i<256;i++){
+      var t = i/255*(STOPS.length-1);
+      var i0 = Math.floor(t), i1 = Math.min(STOPS.length-1,i0+1), f = t-i0;
+      for(var c=0;c<3;c++) ENV[i*3+c] = STOPS[i0][c]+(STOPS[i1][c]-STOPS[i0][c])*f;
+    }
+  })();
+
+  // Seven centres strung along an arc, not a centred cluster. A cluster
+  // resolves to a round blob; an arc reads as a swept ribbon of chrome.
+  // Drift amplitudes are deliberately small so the silhouette breathes
+  // without ever touching the canvas edge and getting cropped flat.
+  var BALLS = [
+    {x:.20,y:.62,w:.55,R:.20,ax:.03,ay:.04,sx:.31,sy:.24,p:0.0},
+    {x:.31,y:.50,w:.70,R:.23,ax:.04,ay:.05,sx:.23,sy:.35,p:0.8},
+    {x:.43,y:.42,w:.85,R:.25,ax:.04,ay:.05,sx:.19,sy:.29,p:1.6},
+    {x:.55,y:.40,w:.90,R:.26,ax:.05,ay:.04,sx:.27,sy:.21,p:2.4},
+    {x:.67,y:.45,w:.80,R:.24,ax:.04,ay:.05,sx:.22,sy:.33,p:3.2},
+    {x:.77,y:.55,w:.65,R:.22,ax:.04,ay:.04,sx:.30,sy:.26,p:4.0},
+    {x:.84,y:.67,w:.50,R:.19,ax:.03,ay:.04,sx:.25,sy:.31,p:4.8}
+  ];
+
+  var field = new Float32Array(N*N);
+  var fieldMax = 1;
+
+  // Wyvill soft-object kernel: w*(1 - d^2/R^2)^3 inside R, zero outside.
+  // An inverse-square kernel spikes without bound at each centre, which makes
+  // the height field plateau across the whole interior; the gradient there
+  // goes to zero and every one of those pixels samples the same spectrum
+  // entry. That is what rendered as a flat peach mass. This kernel is bounded,
+  // so the dome curves continuously from rim to crown.
+  function computeField(t){
+    var bx=[],by=[],bw=[],br2=[],mx=0;
+    for(var b=0;b<BALLS.length;b++){
+      var B=BALLS[b];
+      bx.push(B.x + Math.sin(t*B.sx + B.p)*B.ax);
+      by.push(B.y + Math.cos(t*B.sy + B.p)*B.ay);
+      bw.push(B.w); br2.push(B.R*B.R);
+    }
+    for(var y=0;y<N;y++){
+      var fy=y/N;
+      for(var x=0;x<N;x++){
+        var fx=x/N, s=0;
+        for(var k=0;k<bx.length;k++){
+          var dx=fx-bx[k], dy=fy-by[k], d2=dx*dx+dy*dy;
+          if(d2<br2[k]){ var q=1-d2/br2[k]; s += bw[k]*q*q*q; }
+        }
+        field[y*N+x]=s;
+        if(s>mx) mx=s;
+      }
+    }
+    fieldMax = mx>0.0001 ? mx : 1;
+  }
+
+  var ISO_FRAC = 0.12;     // iso level as a fraction of the frame's peak
+  var BUMP = 40;           // slope gain; higher pushes normals toward grazing
+  // Rim width as a fraction of peak. At 0.03 the contour tears into visible
+  // stair-steps where two lobes meet: the field is near-flat across that
+  // saddle, so the alpha band collapses to under a pixel. 0.07 carries it.
+  var EDGE = 0.07;
+
+  function render(t){
+    computeField(t);
+    var ISO = fieldMax*ISO_FRAC;
+    var invSpan = 1/(fieldMax-ISO);
+    var invEdge = 1/(fieldMax*EDGE);
+    var p=0;
+    for(var y=0;y<N;y++){
+      for(var x=0;x<N;x++){
+        var i=y*N+x, v=field[i];
+        // alpha from the iso band, softened so the silhouette is not aliased
+        var a=(v-ISO)*invEdge;
+        if(a<=0){ data[p+3]=0; p+=4; continue; }
+        if(a>1) a=1;
+
+        // Take the gradient of the dome HEIGHT, not of the raw field. The
+        // gradient of the field leaves a median nz of 0.99: virtually every
+        // normal points at the viewer, so the form samples one slice of the
+        // spectrum and reads as flat colour. The dome sweeps rim to crown and
+        // puts all 256 entries in play, with no entry taking above 1%.
+        var xl = x>0 ? field[i-1] : v, xr = x<N-1 ? field[i+1] : v;
+        var yu = y>0 ? field[i-N] : v, yd = y<N-1 ? field[i+N] : v;
+        var hl=(xl-ISO)*invSpan; hl = hl<0?0:hl>1?1:hl;
+        var hr=(xr-ISO)*invSpan; hr = hr<0?0:hr>1?1:hr;
+        var hu=(yu-ISO)*invSpan; hu = hu<0?0:hu>1?1:hu;
+        var hd=(yd-ISO)*invSpan; hd = hd<0?0:hd>1?1:hd;
+        var nx = (Math.sqrt(hl)-Math.sqrt(hr))*BUMP;
+        var ny = (Math.sqrt(hu)-Math.sqrt(hd))*BUMP;
+        var nz = 1;
+        var len = Math.sqrt(nx*nx+ny*ny+nz*nz);
+        nx/=len; ny/=len; nz/=len;
+
+        // two env samples, vertical and horizontal, give chrome its banding
+        var u = (ny*0.5+0.5)*255; if(u<0)u=0; else if(u>255)u=255;
+        var w = (nx*0.5+0.5)*255; if(w<0)w=0; else if(w>255)w=255;
+        var ui=u|0, wi=w|0;
+
+        // fresnel: grazing angles push further along the spectrum
+        var fres = 1-nz; if(fres<0)fres=0;
+        var shift = (fres*140)|0;
+        var si = (ui+shift)&255;
+
+        var r = ENV[si*3]*0.62   + ENV[wi*3]*0.38;
+        var g = ENV[si*3+1]*0.62 + ENV[wi*3+1]*0.38;
+        var b = ENV[si*3+2]*0.62 + ENV[wi*3+2]*0.38;
+
+        // specular from a fixed key light, tight exponent for a hard chrome glint
+        var d = nx*(-0.45) + ny*(-0.62) + nz*0.64;
+        if(d>0){
+          var sp = Math.pow(d, 26)*255;
+          r+=sp; g+=sp; b+=sp;
+        }
+
+        data[p]   = r>255?255:r;
+        data[p+1] = g>255?255:g;
+        data[p+2] = b>255?255:b;
+        data[p+3] = a*255;
+        p+=4;
+      }
+    }
+    ctx.putImageData(img,0,0);
+  }
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  var visible = true, raf = null, last = 0, START = 0;
+
+  function loop(ts){
+    raf = requestAnimationFrame(loop);
+    if(!visible) return;
+    if(ts-last < 33) return;            // hold to ~30fps
+    last = ts;
+    if(!START) START = ts;
+    render((ts-START)/1000);
+  }
+
+  function start(){
+    if(reduce.matches){ render(2.6); return; }   // one considered frame, no loop
+    if(raf===null) raf = requestAnimationFrame(loop);
+  }
+
+  // Paint one frame synchronously before any rAF is scheduled. Browsers pause
+  // rAF entirely in a hidden or backgrounded document, so without this the
+  // object is simply absent until the tab is focused.
+  render(2.6);
+  function stop(){ if(raf!==null){ cancelAnimationFrame(raf); raf=null; } }
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      visible = es[0].isIntersecting;
+      if(!visible) stop(); else start();
+    },{threshold:0}).observe(cv);
+  }
+
+  reduce.addEventListener && reduce.addEventListener('change',function(){ stop(); START=0; start(); });
+  start();
+})();
+
+/* theme toggle: stamps data-theme, which overrides the media query both ways */
+(function(){
+  var btn=document.getElementById('invert'), root=document.documentElement;
+  btn.addEventListener('click',function(){
+    var dark = root.getAttribute('data-theme')==='dark' ||
+      (!root.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme', dark?'light':'dark');
+  });
+})();
+</script>
 
 </body>
 </html>

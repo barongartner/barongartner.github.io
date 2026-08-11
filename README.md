@@ -6,6 +6,35 @@ One self-contained `index.html`. No build step, no dependencies, no external
 requests at runtime (the font stack is system, the favicon is an inline SVG data
 URI). Edit the file, commit, push. GitHub Pages serves `main` from the root.
 
+## The chrome object
+
+The iridescent form in the hero is generated per pixel in a 256x256 canvas, not
+an image. Seven Wyvill soft-object kernels along an arc make a bounded field;
+that field is compressed into a dome height, and the gradient of the *height*
+gives surface normals which index a 256-entry iridescent strip. Fresnel shifts
+the sample further along the spectrum at grazing angles, and a fixed key light
+adds the specular glints.
+
+Two things are load-bearing and easy to break:
+
+- **Use a bounded kernel.** An inverse-square falloff spikes without limit at
+  each centre, so the height field plateaus across the interior, the gradient
+  goes to zero, and every one of those pixels samples the same spectrum entry.
+  That renders as a flat peach mass rather than chrome.
+- **Take the gradient of the height, not of the field.** The field gradient
+  leaves a median surface normal of nz 0.99, meaning almost everything faces the
+  viewer and the whole form is one colour.
+
+Tuning constants sit together near the top of the script: `ISO_FRAC` sets how
+much of the frame the form fills (~28%), `BUMP` how far normals swing toward
+grazing, `EDGE` the width of the antialiased rim. Below about 0.05, `EDGE` tears
+into stair-steps where two lobes meet.
+
+The loop is capped at 30fps, pauses off-screen via `IntersectionObserver`, and
+renders a single static frame under `prefers-reduced-motion`. One frame is also
+painted synchronously at startup, because browsers pause rAF entirely in a
+hidden or backgrounded document and the object would otherwise be missing.
+
 ## Keeping it accurate
 
 Each app card links to a specific release **tag**, not `/releases/latest`,
