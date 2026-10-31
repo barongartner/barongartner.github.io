@@ -48,15 +48,15 @@ release. The pairs to update in `index.html`:
 | ---------------- | ------------ | --------------------------------- |
 | Photon           | v1.2.0       | `Photon` tag `v1.2.0` (both OSes) |
 | TrackForge       | v1.1.0       | tag `v1.1.0` mac, `v1.0.0` win    |
-| Verbatim         | v2.2.0       | tag `v2.2.0` win                  |
+| Verbatim         | v2.4.0       | tag `v2.4.0` (both OSes)          |
 | FreeFlow         | v2.0.0       | tag `v2.0.0` win                  |
 | FreeVoice Studio | v1.0.0       | tag `v1.0.0` win                  |
 | Split            | v1.1.2       | tag `v1.1.2` mac, `windows-v1.0.0` win |
 | ReType           | v6.0.0       | tag `v6.0.0` win                  |
 
 Windows-only apps are listed as Windows only on purpose. Verbatim shipped macOS
-builds up to v1.1.0 and has been Windows only since v2.0.0, so the card does not
-advertise a Mac download that no longer exists.
+builds up to v1.1.0, went Windows only from v2.0.0, and ships a Mac build again
+from v2.4.0 (dmg and zip on the release), so its card links both.
 
 ## Iris card
 
