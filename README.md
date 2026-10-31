@@ -57,3 +57,18 @@ release. The pairs to update in `index.html`:
 Windows-only apps are listed as Windows only on purpose. Verbatim shipped macOS
 builds up to v1.1.0 and has been Windows only since v2.0.0, so the card does not
 advertise a Mac download that no longer exists.
+
+## Iris card
+
+`iris-card/` is the one-tap contact card for Iris, my iMessage assistant. It used to be
+its own repo (barongartner/iris-card) and moved in here on Oct 31, 2026 because it did not
+need to be separate. The URL did not change: https://barongartner.github.io/iris-card/
+
+- `iris-card/index.html` shows her photo and an Add to Contacts button. Safari gets a plain
+  link to the .vcf, which opens the iOS add-contact sheet. In-app browsers (Snapchat,
+  Instagram) render a .vcf as raw text and block jumps to Safari, so the page detects them
+  and shows the three taps instead.
+- `iris-card/card/Iris.vcf` is the card itself. Iris owns the source copy at
+  `C:\Atlas\Iris\Iris.vcf`; copy it here when she changes it.
+- `404.html` at the root sends any dead `/iris-card/...` link (the old
+  `/iris-card/Iris.vcf` was handed out before the file moved) to the card page.
