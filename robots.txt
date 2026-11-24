@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://barongartner.github.io/sitemap.xml
